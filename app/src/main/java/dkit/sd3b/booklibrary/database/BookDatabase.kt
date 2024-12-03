@@ -2,8 +2,6 @@ package dkit.sd3b.booklibrary.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dkit.sd3b.booklibrary.model.Book
 
 

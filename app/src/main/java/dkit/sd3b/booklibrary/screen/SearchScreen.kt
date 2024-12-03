@@ -1,35 +1,35 @@
 package dkit.sd3b.booklibrary.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import dkit.sd3b.booklibrary.model.BookViewModel
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun SearchScreen(viewModel: BookViewModel) {
-    var query by remember { mutableStateOf("") }
+fun SearchScreen(navController: NavController) {
+    var searchQuery by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text("Search for Books", style = TextStyle(fontSize = 24.sp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Search Field
         TextField(
-            value = query,
-            onValueChange = { query = it },
-            label = { Text("Search Books") },
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            label = { Text("Search books") },
             modifier = Modifier.fillMaxWidth()
         )
-        Button(onClick = { viewModel.fetchBooks() }) {
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = { /* Implement search functionality */ }, modifier = Modifier.fillMaxWidth()) {
             Text("Search")
         }
-       // BookList(viewModel = viewModel)
     }
 }

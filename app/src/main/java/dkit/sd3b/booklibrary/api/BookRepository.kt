@@ -3,6 +3,7 @@ package dkit.sd3b.booklibrary.api
 import dkit.sd3b.booklibrary.database.BookDao
 import dkit.sd3b.booklibrary.model.Book
 import android.util.Log
+import androidx.lifecycle.LiveData
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -17,19 +18,46 @@ class BookRepository(private val bookDao: BookDao) {
     private val api = retrofit.create(GoogleBooksApi::class.java)
 
     // Fetch books from Google Books API and insert into Room database
-    suspend fun fetchBooks(): List<Book> {
-        val query = "novels"
-        try {
-            val response = api.searchBooks("q=$query")
+    suspend fun fetchBooks(query: String, pageIndex: Int, pageSize: Int): List<Book> {
+        // Check for empty or invalid query
+        if (query.isEmpty()) {
+            Log.e("BookRepository", "Query string is empty")
+            return emptyList()
+        }
 
+        // Validate maxResults
+        if (pageSize !in 1..40) {
+            Log.e("BookRepository", "Invalid pageSize: $pageSize, must be between 1 and 40")
+            return emptyList()
+        }
+
+        // Calculate startIndex based on pageIndex and pageSize
+        val startIndex = pageIndex * pageSize
+        Log.d(
+            "BookRepository",
+            "Fetching books with query: $query, pageSize: $pageSize, startIndex: $startIndex"
+        )
+
+        try {
+            val response = api.searchBooks(query, pageSize, startIndex)
 
             if (response.items.isEmpty()) {
                 Log.d("BookRepository", "No books found for the query: $query")
-                return emptyList() // Return an empty list if no books are found
+                return emptyList()
             }
 
             val books = response.items.map { item ->
                 val volumeInfo = item.volumeInfo
+
+                // Ensure the image URL ends with ".jpg"
+                val imageUrl =
+                    volumeInfo.imageLinks?.thumbnail?.replace("http://", "https://")?.let {
+                        if (!it.endsWith(".jpg")) {
+                            "$it.jpg"
+                        } else {
+                            it
+                        }
+                    }
 
                 Book(
                     title = volumeInfo.title ?: "No Title",
@@ -38,9 +66,11 @@ class BookRepository(private val bookDao: BookDao) {
                     isbn = volumeInfo.industryIdentifiers?.firstOrNull { it.type == "ISBN_13" }?.identifier,
                     releaseYear = volumeInfo.publishedDate,
                     genre = volumeInfo.categories?.joinToString(", "),
-                    imageUrl = volumeInfo.imageLinks?.thumbnail
+                    imageUrl = imageUrl
                 )
             }
+
+            // Insert books into the Room database
             bookDao.insertBooks(books)
             return books
         } catch (e: Exception) {
@@ -54,12 +84,19 @@ class BookRepository(private val bookDao: BookDao) {
         return bookDao.getAllBooks()
     }
 
+    fun getGenres(): LiveData<List<String>> {
+        return bookDao.getDistinctGenres()
+    }
 }
 
 // Define the Google Books API interface
 interface GoogleBooksApi {
     @GET("books/v1/volumes")
-    suspend fun searchBooks(@Query("q") query: String): GoogleBooksResponse
+    suspend fun searchBooks(
+        @Query("q") query: String,
+        @Query("maxResults") maxResults: Int,
+        @Query("startIndex") startIndex: Int
+    ): GoogleBooksResponse
 }
 
 // Response models for Google Books API
@@ -89,4 +126,3 @@ data class IndustryIdentifier(
 data class ImageLinks(
     val thumbnail: String?
 )
-
