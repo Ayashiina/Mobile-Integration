@@ -15,41 +15,51 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
 
     val genres: LiveData<List<String>> = bookRepository.getGenres()
 
-    private val _readingList = MutableLiveData<Set<Int>>(emptySet())
-    val readingList: LiveData<Set<Int>> = _readingList
+    private val _favoriteBooks = MutableLiveData<List<Book>>(emptyList())
+    val favoriteBooks: LiveData<List<Book>> = _favoriteBooks
 
-    init {
-        "modern novels".fetchBooks(10, 30)
-    }
+    private val _selectedBook = MutableLiveData<Book?>()
+    val selectedBook: LiveData<Book?> get() = _selectedBook
 
-    private fun String.fetchBooks(minRating: Int, maxResults: Int) {
+    private fun fetchBooks(query: String, pageIndex: Int, pageSize: Int) {
         viewModelScope.launch {
             try {
-                val fetchedBooks = bookRepository.fetchBooks(this@fetchBooks, minRating, maxResults)
+                val fetchedBooks = bookRepository.fetchBooks(query, pageIndex, pageSize)
                 _books.postValue(fetchedBooks)
             } catch (e: Exception) {
-                Log.e("BookViewModel", "Error fetching books: ${e.message}", e)
+                Log.e("BookLog", "Error fetching books: ${e.message}", e)
             }
         }
     }
 
-    fun refreshBooks() {
+    fun setNewQueryAndRefresh(query: String) {
         viewModelScope.launch {
             try {
-                val allBooks = bookRepository.getAllBooks()
-                _books.postValue(allBooks)
+                fetchBooks(query, pageIndex = 10, pageSize = 40)
+                val newBooks = _books.value ?: emptyList()
+                bookRepository.refreshBooks(newBooks)
             } catch (e: Exception) {
-                Log.e("BookViewModel", "Error refreshing books: ${e.message}", e)
+                Log.e("BookLog", "Error fetching or refreshing books: ${e.message}", e)
             }
         }
     }
 
-    fun getBookById(bookId: Int): Book? {
-        return _books.value?.find { it.id == bookId }
+    fun fetchBookById(bookId: Int) {
+        viewModelScope.launch {
+            val book = bookRepository.getBookById(bookId)
+            _selectedBook.value = book
+        }
     }
 
-    fun addToList(bookId: Int) {
-        val currentList = _readingList.value.orEmpty()
-        _readingList.postValue(currentList + bookId)
+
+    fun fetchBooksFromDatabase() {
+        viewModelScope.launch {
+            val booksList = bookRepository.fetchBooksFromDatabase()
+            _books.value = booksList
+        }
+    }
+
+    fun addToFavorites(book: Book) {
+        _favoriteBooks.value = _favoriteBooks.value?.plus(book)
     }
 }

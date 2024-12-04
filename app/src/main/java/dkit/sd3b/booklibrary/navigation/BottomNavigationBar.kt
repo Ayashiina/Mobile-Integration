@@ -28,9 +28,9 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.book_education_outline),
                 label = "Home",
-                selected = navBackStackEntry.value?.destination?.route == Screen.Home.route,
+                selected = navBackStackEntry.value?.destination?.route == ScreenNavigation.Home.route,
                 onClick = {
-                    navController.navigate(Screen.Home.route) {
+                    navController.navigate(ScreenNavigation.Home.route) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -39,9 +39,9 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.book_search_outline),
                 label = "Search",
-                selected = navBackStackEntry.value?.destination?.route == Screen.Search.route,
+                selected = navBackStackEntry.value?.destination?.route == ScreenNavigation.Search.route,
                 onClick = {
-                    navController.navigate(Screen.Search.route) {
+                    navController.navigate(ScreenNavigation.Search.route) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -50,9 +50,9 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.book_spark_outline),
                 label = "Recommendations",
-                selected = navBackStackEntry.value?.destination?.route == Screen.Recommendations.route,
+                selected = navBackStackEntry.value?.destination?.route == ScreenNavigation.Recommendations.route,
                 onClick = {
-                    navController.navigate(Screen.Recommendations.route) {
+                    navController.navigate(ScreenNavigation.Recommendations.route) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -61,9 +61,9 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.book_heart_outline),
                 label = "Favorites",
-                selected = navBackStackEntry.value?.destination?.route == Screen.Favorites.route,
+                selected = navBackStackEntry.value?.destination?.route == ScreenNavigation.Favorites.route,
                 onClick = {
-                    navController.navigate(Screen.Favorites.route) {
+                    navController.navigate(ScreenNavigation.Favorites.route) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -72,9 +72,9 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.book_account_outline),
                 label = "Profile",
-                selected = navBackStackEntry.value?.destination?.route == Screen.Profile.route,
+                selected = navBackStackEntry.value?.destination?.route == ScreenNavigation.Profile.route,
                 onClick = {
-                    navController.navigate(Screen.Profile.route) {
+                    navController.navigate(ScreenNavigation.Profile.route) {
                         launchSingleTop = true
                         restoreState = true
                     }

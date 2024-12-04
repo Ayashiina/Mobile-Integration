@@ -1,6 +1,7 @@
 package dkit.sd3b.booklibrary.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,25 +16,46 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.navigation.NavController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import dkit.sd3b.booklibrary.R
-import dkit.sd3b.booklibrary.navigation.Screen
+import dkit.sd3b.booklibrary.navigation.ScreenNavigation
 
 @Composable
 fun HelpScreen(navController: NavController) {
     Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Animation()
+        Image(
+            painter = rememberDrawablePainter(
+                drawable = getDrawable(
+                    LocalContext.current,
+                    R.drawable.book_animation
+                ),
+            ),
+            contentDescription = "Help Animation",
+        )
+        Text(
+            text = "Instructions",
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            ),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         SectionCard(
-            title = "What is Book Library?",
-            description = "Book Library helps you discover, organize, and enjoy books. Browse popular genres, save favorites, and get personalized recommendations."
+            title = "What is Book Sphere?",
+            description = "Book Sphere helps you discover, organize, and enjoy books. Browse popular genres, save favorites, and get personalized recommendations."
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -53,7 +75,7 @@ fun HelpScreen(navController: NavController) {
         // Tips Section
         SectionCard(
             title = "Tips & Tricks",
-            description = "Swipe left or right on book covers to quickly add them to favorites or remove them. Try the recommendation feature for hidden gems!"
+            description = "Customize your book recommendations by editing the query on the homepage. Adjust the search to discover books that match your interests!"
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -63,32 +85,11 @@ fun HelpScreen(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             androidx.compose.material3.Button(
-                onClick = { navController.navigate(Screen.Home.route) }
+                onClick = { navController.navigate(ScreenNavigation.Home.route) }
             ) {
                 Text("Got It!")
             }
         }
-    }
-}
-
-@Composable
-fun Animation() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = rememberDrawablePainter(
-                drawable = getDrawable(
-                    LocalContext.current,
-                    R.drawable.book_animation
-                ),
-            ),
-            contentDescription = "Help Icon",
-            modifier = Modifier.fillMaxSize(),
-        )
     }
 }
 

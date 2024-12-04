@@ -21,20 +21,25 @@ class BookRepository(private val bookDao: BookDao) {
     suspend fun fetchBooks(query: String, pageIndex: Int, pageSize: Int): List<Book> {
         // Check for empty or invalid query
         if (query.isEmpty()) {
-            Log.e("BookRepository", "Query string is empty")
+            Log.e("BookLog", "Query string is empty")
             return emptyList()
         }
 
         // Validate maxResults
-        if (pageSize !in 1..40) {
-            Log.e("BookRepository", "Invalid pageSize: $pageSize, must be between 1 and 40")
+        if (pageSize !in 1..50) {
+            Log.e("BookLog", "Invalid pageSize: $pageSize, must be between 1 and 50")
+            return emptyList()
+        }
+
+        if (pageIndex !in 1..10) {
+            Log.e("BookLog", "Invalid pageSize: $pageSize, must be between 1 and 10")
             return emptyList()
         }
 
         // Calculate startIndex based on pageIndex and pageSize
         val startIndex = pageIndex * pageSize
         Log.d(
-            "BookRepository",
+            "BookLog",
             "Fetching books with query: $query, pageSize: $pageSize, startIndex: $startIndex"
         )
 
@@ -42,7 +47,7 @@ class BookRepository(private val bookDao: BookDao) {
             val response = api.searchBooks(query, pageSize, startIndex)
 
             if (response.items.isEmpty()) {
-                Log.d("BookRepository", "No books found for the query: $query")
+                Log.d("BookLog", "No books found for the query: $query")
                 return emptyList()
             }
 
@@ -69,24 +74,31 @@ class BookRepository(private val bookDao: BookDao) {
                     imageUrl = imageUrl
                 )
             }
-
-            // Insert books into the Room database
-            bookDao.insertBooks(books)
+            bookDao.refreshBooks(books)
             return books
         } catch (e: Exception) {
-            Log.e("BookRepository", "Error fetching books", e)
+            Log.e("BookLog", "Error fetching books", e)
             return emptyList()
         }
     }
 
-    // Fetch all books stored in Room DB
-    suspend fun getAllBooks(): List<Book> {
+    suspend fun fetchBooksFromDatabase(): List<Book> {
         return bookDao.getAllBooks()
+    }
+
+    suspend fun getBookById(bookId: Int): Book? {
+        return bookDao.getBookById(bookId)
     }
 
     fun getGenres(): LiveData<List<String>> {
         return bookDao.getDistinctGenres()
     }
+
+    suspend fun refreshBooks(newBooks: List<Book>) {
+        bookDao.refreshBooks(newBooks)
+        bookDao.insertBooks(newBooks)
+    }
+
 }
 
 // Define the Google Books API interface
