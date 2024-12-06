@@ -6,7 +6,6 @@ import androidx.room.ColumnInfo
 
 @Entity(tableName = "books")
 data class Book(
-    @ColumnInfo(defaultValue = "0") val favorite: Boolean = false,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String?,
@@ -16,6 +15,7 @@ data class Book(
     val thumbnail: String?,
     val genre: String? = null,
     val description: String? = null,
+    val favorite: Boolean = false,
 )
 
 

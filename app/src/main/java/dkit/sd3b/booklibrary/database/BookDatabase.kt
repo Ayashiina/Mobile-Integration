@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import dkit.sd3b.booklibrary.model.Book
 
 
-@Database([Book::class], version = 5, exportSchema = false)
+@Database([Book::class], version = 6, exportSchema = false)
 abstract class BookDatabase : RoomDatabase() {
     abstract fun bookDao(): BookDao
 }

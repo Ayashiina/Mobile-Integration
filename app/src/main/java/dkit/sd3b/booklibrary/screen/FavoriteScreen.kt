@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -46,7 +48,9 @@ fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
         Text(
             text = "You have ${favoriteBooks.size} favorite books",
             style = MaterialTheme.typography.headlineMedium.copy(fontSize = 18.sp),
-            modifier = Modifier.padding(bottom = 16.dp).align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center
         )
 
