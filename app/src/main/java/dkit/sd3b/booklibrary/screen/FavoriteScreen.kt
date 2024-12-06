@@ -43,7 +43,6 @@ fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Favorite Counter
         Text(
             text = "You have ${favoriteBooks.size} favorite books",
             style = MaterialTheme.typography.headlineMedium.copy(fontSize = 18.sp),
@@ -51,7 +50,6 @@ fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
             textAlign = TextAlign.Center
         )
 
-        // Show empty state if no favorites are present
         if (favoriteBooks.isEmpty()) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -86,7 +84,6 @@ fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
                 }
             }
         } else {
-            // Display Favorite Books
             LazyColumn {
                 items(favoriteBooks) { book ->
                     FavoriteBookItem(book, viewModel, navController)
@@ -137,6 +134,7 @@ fun FavoriteBookItem(book: Book, viewModel: BookViewModel, navController: NavCon
 
         Spacer(modifier = Modifier.width(16.dp))
 
+        // Favorite Icon
         Icon(
             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
             contentDescription = "Favorite Icon",
@@ -144,7 +142,6 @@ fun FavoriteBookItem(book: Book, viewModel: BookViewModel, navController: NavCon
             modifier = Modifier
                 .size(30.dp)
                 .clickable {
-                    // Toggle favorite status
                     isFavorite = !isFavorite
                     if (isFavorite) {
                         viewModel.addToFavorites(book.id, true)

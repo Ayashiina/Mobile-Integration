@@ -19,7 +19,6 @@ class BookRepository(private val bookDao: BookDao) {
 
     // Fetch books from Google Books API and insert into Room database
     suspend fun fetchBooks(query: String, pageIndex: Int, pageSize: Int): List<Book> {
-        // Check for empty or invalid query
         if (query.isEmpty()) {
             Log.e("BookLog-Repo", "Query string is empty")
             return emptyList()

@@ -72,7 +72,6 @@ fun HelpScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Tips Section
         SectionCard(
             title = "Tips & Tricks",
             description = "Customize your book recommendations by editing the query on the homepage. Adjust the search to discover books that match your interests!"

@@ -88,7 +88,6 @@ fun SearchScreen(viewModel: BookViewModel, navController: NavController) {
 
         if (performSearch && searchQuery.isNotEmpty()) {
             if (searchResults.isEmpty()) {
-                // If no books were found, show a message
                 item {
                     Text(
                         text = "No books found. Please try a different search.",
@@ -98,7 +97,6 @@ fun SearchScreen(viewModel: BookViewModel, navController: NavController) {
                 }
                 noResultsFound = true
             } else {
-                // Display search results in a LazyColumn
                 items(searchResults) { book ->
                     SearchItems(book, onClick = {
                         Log.d("BookLog-Search", "Navigating to details for book: ${book.title}")

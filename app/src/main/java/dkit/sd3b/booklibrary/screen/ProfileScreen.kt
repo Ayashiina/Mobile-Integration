@@ -86,8 +86,6 @@ fun ProfileScreen() {
                 }
             }
         }
-
-        // Scrollable Content
         Column(
             modifier = Modifier
                 .fillMaxSize()

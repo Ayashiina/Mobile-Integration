@@ -68,16 +68,14 @@ fun HomeScreen(navController: NavController, viewModel: BookViewModel) {
                     CategoryItem(category)
                 }
             }
-        }else{
+        } else {
             Text(
                 "NO categories available", style = TextStyle(fontSize = 22.sp, color = Color.Black)
             )
         }
-
-        // Spacer between sections
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Recommended Books Section
+        // Recommended Section
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
