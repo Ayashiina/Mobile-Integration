@@ -60,6 +60,28 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
     }
 
     fun addToFavorites(book: Book) {
-        _favoriteBooks.value = _favoriteBooks.value?.plus(book)
+        viewModelScope.launch {
+            bookRepository.saveFavoriteBook(book)
+            _favoriteBooks.value = _favoriteBooks.value?.plus(book)
+        }
+    }
+
+    fun fetchFavoriteBooks() {
+        viewModelScope.launch {
+            _favoriteBooks.value = bookRepository.getFavoriteBooks().value
+        }
+    }
+
+
+    fun searchBooks(query: String, onResult: (List<Book>) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val results = bookRepository.searchBooks(query)
+                onResult(results)
+            } catch (e: Exception) {
+                Log.e("BookViewModel", "Error searching books: ${e.message}", e)
+                onResult(emptyList())
+            }
+        }
     }
 }

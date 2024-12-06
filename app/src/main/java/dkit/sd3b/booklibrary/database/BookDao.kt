@@ -30,4 +30,13 @@ interface BookDao {
         deleteAllBooks()
         insertBooks(books)
     }
+
+    @Query("SELECT * FROM books WHERE title LIKE '%' || :query || '%' OR author LIKE '%' || :query || '%'")
+    fun searchBooks(query: String): List<Book>
+
+    @Query("UPDATE books SET favorite = :isFavorite WHERE id = :bookId")
+    suspend fun updateFavoriteStatus(bookId: Int, isFavorite: Boolean)
+
+    @Query("SELECT * FROM books WHERE favorite = 1")
+    fun getFavoriteBooks(): LiveData<List<Book>>
 }

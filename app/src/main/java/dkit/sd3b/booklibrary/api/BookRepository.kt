@@ -99,6 +99,17 @@ class BookRepository(private val bookDao: BookDao) {
         bookDao.insertBooks(newBooks)
     }
 
+    fun searchBooks(query: String): List<Book> {
+        return bookDao.searchBooks(query)
+    }
+    suspend fun saveFavoriteBook(book: Book) {
+        bookDao.updateFavoriteStatus(book.id, true)
+    }
+
+    fun getFavoriteBooks(): LiveData<List<Book>> {
+        return bookDao.getFavoriteBooks()
+    }
+
 }
 
 // Define the Google Books API interface
