@@ -2,7 +2,6 @@ package dkit.sd3b.booklibrary.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.ColumnInfo
 
 @Entity(tableName = "books")
 data class Book(
