@@ -1,6 +1,6 @@
 package dkit.sd3b.booklibrary.navigation
 
-import dkit.sd3b.booklibrary.screen.HelpScreen
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,12 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dkit.sd3b.booklibrary.model.BookViewModel
-import dkit.sd3b.booklibrary.screen.BookDetails
-import dkit.sd3b.booklibrary.screen.RecommendationScreen
-import dkit.sd3b.booklibrary.screen.FavoriteScreen
-import dkit.sd3b.booklibrary.screen.HomeScreen
-import dkit.sd3b.booklibrary.screen.ProfileScreen
-import dkit.sd3b.booklibrary.screen.SearchScreen
+import dkit.sd3b.booklibrary.screen.*
 
 @Composable
 fun AppNavigator(viewModel: BookViewModel) {
@@ -41,35 +36,56 @@ fun AppNavigator(viewModel: BookViewModel) {
             startDestination = "home",
             modifier = Modifier.padding(padding)
         ) {
-            composable("help") {
-                HelpScreen(navController)
-            }
-            composable("search") {
-                SearchScreen(navController)
-            }
-            composable("profile") {
-                ProfileScreen(navController)
-            }
-            composable("home") {
-                HomeScreen(navController, viewModel)
-            }
-            composable("favorites") {
-                FavoriteScreen(viewModel, navController)
-            }
-            composable("recommendations") {
-                RecommendationScreen(viewModel, navController)
-            }
+            composable(
+                "help",
+                content = { HelpScreen(navController) },
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            )
+            composable(
+                "search",
+                content = { SearchScreen(navController) },
+                enterTransition = { slideInHorizontally(initialOffsetX = { 300 }) },
+                exitTransition = { slideOutHorizontally(targetOffsetX = { -300 }) }
+            )
+            composable(
+                "profile",
+                content = { ProfileScreen() },
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() },
+            )
+            composable(
+                "home",
+                content = { HomeScreen(navController, viewModel) },
+                enterTransition = { slideInHorizontally(initialOffsetX = { -300 }) },
+                exitTransition = { slideOutHorizontally(targetOffsetX = { 300 }) }
+            )
+            composable(
+                "favorites",
+                content = { FavoriteScreen(viewModel, navController) },
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            )
+            composable(
+                "recommendations",
+                content = { RecommendationScreen(viewModel, navController) },
+                enterTransition = { slideInHorizontally(initialOffsetX = { 300 }) },
+                exitTransition = { slideOutHorizontally(targetOffsetX = { -300 }) }
+            )
             composable(
                 ScreenNavigation.BookDetail.ROUTE,
-                arguments = listOf(navArgument("bookId") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val bookId = backStackEntry.arguments?.getInt("bookId") ?: return@composable
-                BookDetails(
-                    bookId = bookId,
-                    viewModel = viewModel,
-                    navController = navController
-                )
-            }
+                arguments = listOf(navArgument("bookId") { type = NavType.IntType }),
+                content = { backStackEntry ->
+                    val bookId = backStackEntry.arguments?.getInt("bookId") ?: return@composable
+                    BookDetails(
+                        bookId = bookId,
+                        viewModel = viewModel,
+                        navController = navController
+                    )
+                },
+                enterTransition = { scaleIn(initialScale = 0.8f) + fadeIn() },
+                exitTransition = { scaleOut(targetScale = 1.2f) + fadeOut() }
+            )
         }
     }
 }

@@ -2,13 +2,9 @@ package dkit.sd3b.booklibrary.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -40,7 +36,8 @@ fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
     if (favoriteBooks.isEmpty()) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
             Image(
                 painter = rememberDrawablePainter(
@@ -57,15 +54,12 @@ fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
             Button(
                 onClick = {
                     navController.navigate(ScreenNavigation.Recommendations.route)
-                },
-                colors = ButtonDefaults.buttonColors(
+                }, colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red
-                ),
-                modifier = Modifier.padding(16.dp)
+                ), modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Add Now",
-                    color = Color.White
+                    text = "Add Now", color = Color.White
                 )
             }
         }

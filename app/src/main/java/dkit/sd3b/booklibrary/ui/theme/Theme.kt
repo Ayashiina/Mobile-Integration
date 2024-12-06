@@ -1,6 +1,6 @@
 package dkit.sd3b.booklibrary.ui.theme
 
-import android.app.Activity
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,6 +9,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
@@ -34,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun BookLibraryTheme(
+fun BookSphereTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
@@ -55,4 +57,14 @@ fun BookLibraryTheme(
         typography = Typography,
         content = content
     )
+}
+
+@Composable
+fun TransparentStatusBar() {
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+        )
+    }
 }

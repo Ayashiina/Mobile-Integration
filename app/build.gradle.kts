@@ -53,6 +53,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.navigation.animation)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.retrofit)
     implementation(libs.androidx.animation)
     implementation(libs.accompanist.drawablepainter)
@@ -62,6 +65,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.appcompat)
     debugImplementation(libs.ui.tooling)
     implementation(libs.androidx.foundation)
     implementation(platform(libs.androidx.compose.bom))

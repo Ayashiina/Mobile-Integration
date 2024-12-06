@@ -3,10 +3,8 @@ package dkit.sd3b.booklibrary.navigation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import dkit.sd3b.booklibrary.R
@@ -21,9 +19,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun BottomNavigationBar(navController: NavController) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
 
-    BottomAppBar(
-        modifier = Modifier.padding(8.dp)
-    ) {
+    BottomAppBar()
+    {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             BottomNavItem(
                 icon = painterResource(id = R.drawable.book_education_outline),

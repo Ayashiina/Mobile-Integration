@@ -10,7 +10,6 @@ import dkit.sd3b.booklibrary.model.Book
 
 @Dao
 interface BookDao {
-
     @Query("SELECT * FROM books")
     suspend fun getAllBooks(): List<Book>
 

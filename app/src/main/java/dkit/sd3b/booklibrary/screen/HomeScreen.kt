@@ -45,6 +45,7 @@ fun HomeScreen(navController: NavController, viewModel: BookViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var queryText by remember { mutableStateOf("recommendations") }
 
+
     LaunchedEffect(Unit) {
         viewModel.fetchBooksFromDatabase()
     }
