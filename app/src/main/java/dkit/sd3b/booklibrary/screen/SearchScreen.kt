@@ -1,5 +1,6 @@
 package dkit.sd3b.booklibrary.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,8 +29,12 @@ fun SearchScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { /* Implement search functionality */ }, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = {performSearch(searchQuery)}, modifier = Modifier.fillMaxWidth()) {
             Text("Search")
         }
     }
+}
+
+fun performSearch(searchQuery: String) {
+    Log.d("SearchScreen", "Searching for: $searchQuery")
 }
