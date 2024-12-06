@@ -137,7 +137,7 @@ fun ProfileScreen() {
                 isEditing = isEditingAboutMe,
                 onEditClick = { isEditingAboutMe = !isEditingAboutMe },
                 onValueChange = { aboutMe = it },
-                isListStyle = true
+
             )
 
             // Favorite Genres Section
@@ -168,7 +168,6 @@ fun EditableField(
     isEditing: Boolean,
     onEditClick: () -> Unit,
     onValueChange: (String) -> Unit,
-    isListStyle: Boolean = false
 ) {
     Box(
         modifier = Modifier

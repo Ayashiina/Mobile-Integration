@@ -13,14 +13,9 @@ data class Book(
     val isbn: String?,
     val author: String?,
     val releaseYear: String?,
-    val imageUrl: String?,
-    val rating: Float? = null,
+    val thumbnail: String?,
     val genre: String? = null,
     val description: String? = null,
-    val profilePicture: String? = null,
-    val wallpaperUrl: String? = null,
-    val thumbnailUrl: String? = null
-
 )
 
 

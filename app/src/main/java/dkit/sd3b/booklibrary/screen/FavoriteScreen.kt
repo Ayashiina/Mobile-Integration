@@ -1,26 +1,16 @@
 package dkit.sd3b.booklibrary.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,72 +22,136 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import dkit.sd3b.booklibrary.R
+import dkit.sd3b.booklibrary.model.Book
 import dkit.sd3b.booklibrary.model.BookViewModel
 import dkit.sd3b.booklibrary.navigation.ScreenNavigation
 
 @Composable
-
 fun FavoriteScreen(viewModel: BookViewModel, navController: NavController) {
     val favoriteBooks by viewModel.favoriteBooks.observeAsState(emptyList())
 
-    if (favoriteBooks.isEmpty()) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Image(
-                painter = rememberDrawablePainter(
-                    drawable = getDrawable(
-                        LocalContext.current, R.drawable.favorite_animation
-                    ),
-                ),
-                contentDescription = "Favorites Animation",
-            )
-            Text(
-                text = "No favorites yet",
-                style = TextStyle(fontSize = 20.sp, textAlign = TextAlign.Center),
-            )
-            Button(
-                onClick = {
-                    navController.navigate(ScreenNavigation.Recommendations.route)
-                }, colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red
-                ), modifier = Modifier.padding(16.dp)
+    LaunchedEffect(Unit) {
+        viewModel.fetchFavoriteBooks()
+        Log.d("BookLog-Favorite", "LaunchedEffect triggered")
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // Favorite Counter
+        Text(
+            text = "You have ${favoriteBooks.size} favorite books",
+            style = MaterialTheme.typography.headlineMedium.copy(fontSize = 18.sp),
+            modifier = Modifier.padding(bottom = 16.dp).align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center
+        )
+
+        // Show empty state if no favorites are present
+        if (favoriteBooks.isEmpty()) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
             ) {
-                Text(
-                    text = "Add Now", color = Color.White
+                Image(
+                    painter = rememberDrawablePainter(
+                        drawable = getDrawable(
+                            LocalContext.current, R.drawable.favorite_animation
+                        ),
+                    ),
+                    contentDescription = "Favorites Animation",
                 )
-            }
-        }
-    } else {
-        LazyColumn {
-            items(favoriteBooks) { book ->
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Text(
+                    text = "No favorites yet",
+                    style = TextStyle(fontSize = 20.sp, textAlign = TextAlign.Center),
+                )
+                Button(
+                    onClick = {
+                        navController.navigate(ScreenNavigation.Recommendations.route)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    ),
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Image(
-                        painter = rememberImagePainter(data = book.thumbnailUrl),
-                        contentDescription = "Book Thumbnail",
-                        modifier = Modifier.size(50.dp)
+                    Text(
+                        text = "Add Now",
+                        color = Color.White
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = book.title, style = MaterialTheme.typography.titleSmall)//check
-                        Text(text = book.author, style = MaterialTheme.typography.bodyLarge)//check
-                    }
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorite Icon",
-                        tint = Color.Red
-                    )
+                }
+            }
+        } else {
+            // Display Favorite Books
+            LazyColumn {
+                items(favoriteBooks) { book ->
+                    FavoriteBookItem(book, viewModel, navController)
                 }
             }
         }
     }
+}
+
+@Composable
+fun FavoriteBookItem(book: Book, viewModel: BookViewModel, navController: NavController) {
+    var isFavorite by remember { mutableStateOf(true) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .clickable {
+                    navController.navigate(ScreenNavigation.BookDetail.createRoute(book.id))
+                }
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Book Thumbnail
+            Image(
+                painter = rememberAsyncImagePainter(model = book.thumbnail),
+                contentDescription = "Book Thumbnail",
+                modifier = Modifier.size(50.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Book Title and Author
+            Column {
+                Text(
+                    text = book.title ?: "Unknown Title",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = book.author ?: "Unknown Author",
+                    style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Icon(
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            contentDescription = "Favorite Icon",
+            tint = if (isFavorite) Color.Red else Color.Gray,
+            modifier = Modifier
+                .size(30.dp)
+                .clickable {
+                    // Toggle favorite status
+                    isFavorite = !isFavorite
+                    if (isFavorite) {
+                        viewModel.addToFavorites(book.id, true)
+                    } else {
+                        viewModel.addToFavorites(book.id, false)
+                    }
+                }
+        )
+    }
+}

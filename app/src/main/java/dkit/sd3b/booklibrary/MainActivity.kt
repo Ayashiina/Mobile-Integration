@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         bookDatabase = Room.databaseBuilder(
             applicationContext,
             BookDatabase::class.java, "book-database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
 
         bookDao = bookDatabase.bookDao()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)

@@ -15,11 +15,12 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
 
     val genres: LiveData<List<String>> = bookRepository.getGenres()
 
-    private val _favoriteBooks = MutableLiveData<List<Book>>(emptyList())
+    private val _favoriteBooks = MutableLiveData<List<Book>>()
     val favoriteBooks: LiveData<List<Book>> = _favoriteBooks
 
     private val _selectedBook = MutableLiveData<Book?>()
     val selectedBook: LiveData<Book?> get() = _selectedBook
+
 
     private fun fetchBooks(query: String, pageIndex: Int, pageSize: Int) {
         viewModelScope.launch {
@@ -27,7 +28,7 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
                 val fetchedBooks = bookRepository.fetchBooks(query, pageIndex, pageSize)
                 _books.postValue(fetchedBooks)
             } catch (e: Exception) {
-                Log.e("BookLog", "Error fetching books: ${e.message}", e)
+                Log.e("BookLog-View", "Error fetching books: ${e.message}", e)
             }
         }
     }
@@ -39,7 +40,7 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
                 val newBooks = _books.value ?: emptyList()
                 bookRepository.refreshBooks(newBooks)
             } catch (e: Exception) {
-                Log.e("BookLog", "Error fetching or refreshing books: ${e.message}", e)
+                Log.e("BookLog-View", "Error fetching or refreshing books: ${e.message}", e)
             }
         }
     }
@@ -51,37 +52,38 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
         }
     }
 
-
     fun fetchBooksFromDatabase() {
         viewModelScope.launch {
             val booksList = bookRepository.fetchBooksFromDatabase()
             _books.value = booksList
         }
     }
-
-    fun addToFavorites(book: Book) {
+    fun searchBooks(query: String) {
         viewModelScope.launch {
-            bookRepository.saveFavoriteBook(book)
-            _favoriteBooks.value = _favoriteBooks.value?.plus(book)
+            try {
+                val results = bookRepository.searchBooks(query)
+                _books.value = results
+            } catch (e: Exception) {
+                Log.e("BookViewModel", "Error searching books: ${e.message}", e)
+            }
+        }
+    }
+
+    fun addToFavorites(bookId: Int, isFavorite: Boolean) {
+        viewModelScope.launch {
+            if (isFavorite) {
+                bookRepository.addBookToFavorites(bookId)
+            } else {
+                bookRepository.removeBookFromFavorites(bookId)
+            }
+            fetchFavoriteBooks()
         }
     }
 
     fun fetchFavoriteBooks() {
         viewModelScope.launch {
-            _favoriteBooks.value = bookRepository.getFavoriteBooks().value
-        }
-    }
-
-
-    fun searchBooks(query: String, onResult: (List<Book>) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val results = bookRepository.searchBooks(query)
-                onResult(results)
-            } catch (e: Exception) {
-                Log.e("BookViewModel", "Error searching books: ${e.message}", e)
-                onResult(emptyList())
-            }
+            val favorites = bookRepository.getFavoriteBooks()
+            _favoriteBooks.value = favorites
         }
     }
 }

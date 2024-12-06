@@ -21,47 +21,45 @@ class BookRepository(private val bookDao: BookDao) {
     suspend fun fetchBooks(query: String, pageIndex: Int, pageSize: Int): List<Book> {
         // Check for empty or invalid query
         if (query.isEmpty()) {
-            Log.e("BookLog", "Query string is empty")
+            Log.e("BookLog-Repo", "Query string is empty")
             return emptyList()
         }
 
         // Validate maxResults
         if (pageSize !in 1..50) {
-            Log.e("BookLog", "Invalid pageSize: $pageSize, must be between 1 and 50")
+            Log.e("BookLog-Repo", "Invalid pageSize: $pageSize, must be between 1 and 50")
             return emptyList()
         }
 
         if (pageIndex !in 1..10) {
-            Log.e("BookLog", "Invalid pageSize: $pageSize, must be between 1 and 10")
+            Log.e("BookLog-Repo", "Invalid pageSize: $pageSize, must be between 1 and 10")
             return emptyList()
         }
 
         // Calculate startIndex based on pageIndex and pageSize
-        val startIndex = pageIndex * pageSize
+        val startIndex = (pageIndex - 1) * pageSize
         Log.d(
-            "BookLog",
+            "BookLog-Repo",
             "Fetching books with query: $query, pageSize: $pageSize, startIndex: $startIndex"
         )
 
         try {
+            Log.d(
+                "BookLog-Repo",
+                "Request URL: https://www.googleapis.com/books/v1/volumes?q=$query&maxResults=$pageSize&startIndex=$startIndex"
+            )
             val response = api.searchBooks(query, pageSize, startIndex)
 
             if (response.items.isEmpty()) {
-                Log.d("BookLog", "No books found for the query: $query")
+                Log.d("BookLog-Repo", "No books found for query: $query")
                 return emptyList()
             }
 
             val books = response.items.map { item ->
                 val volumeInfo = item.volumeInfo
-
-                // Ensure the image URL ends with ".jpg"
                 val imageUrl =
                     volumeInfo.imageLinks?.thumbnail?.replace("http://", "https://")?.let {
-                        if (!it.endsWith(".jpg")) {
-                            "$it.jpg"
-                        } else {
-                            it
-                        }
+                        if (!it.endsWith(".jpg")) "$it.jpg" else it
                     }
 
                 Book(
@@ -71,13 +69,13 @@ class BookRepository(private val bookDao: BookDao) {
                     isbn = volumeInfo.industryIdentifiers?.firstOrNull { it.type == "ISBN_13" }?.identifier,
                     releaseYear = volumeInfo.publishedDate,
                     genre = volumeInfo.categories?.joinToString(", "),
-                    imageUrl = imageUrl
+                    thumbnail = imageUrl
                 )
             }
             bookDao.refreshBooks(books)
             return books
         } catch (e: Exception) {
-            Log.e("BookLog", "Error fetching books", e)
+            Log.e("BookLog-Repo", "Error fetching books", e)
             return emptyList()
         }
     }
@@ -99,17 +97,21 @@ class BookRepository(private val bookDao: BookDao) {
         bookDao.insertBooks(newBooks)
     }
 
-    fun searchBooks(query: String): List<Book> {
+    suspend fun searchBooks(query: String): List<Book> {
         return bookDao.searchBooks(query)
     }
-    suspend fun saveFavoriteBook(book: Book) {
-        bookDao.updateFavoriteStatus(book.id, true)
-    }
 
-    fun getFavoriteBooks(): LiveData<List<Book>> {
+    suspend fun getFavoriteBooks(): List<Book> {
         return bookDao.getFavoriteBooks()
     }
 
+    suspend fun addBookToFavorites(bookId: Int) {
+        bookDao.addToFavorites(bookId)
+    }
+
+    suspend fun removeBookFromFavorites(bookId: Int) {
+        bookDao.removeFromFavorites(bookId)
+    }
 }
 
 // Define the Google Books API interface

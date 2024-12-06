@@ -44,7 +44,7 @@ fun AppNavigator(viewModel: BookViewModel) {
             )
             composable(
                 "search",
-                content = { SearchScreen(navController) },
+                content = { SearchScreen(viewModel, navController) },
                 enterTransition = { slideInHorizontally(initialOffsetX = { 300 }) },
                 exitTransition = { slideOutHorizontally(targetOffsetX = { -300 }) }
             )

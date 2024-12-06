@@ -1,11 +1,8 @@
 package dkit.sd3b.booklibrary.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -35,6 +32,7 @@ fun BookDetails(bookId: Int, navController: NavController, viewModel: BookViewMo
     }
 
     selectedBook?.let {
+        isFavorite = it.favorite
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,7 +64,7 @@ fun BookDetails(bookId: Int, navController: NavController, viewModel: BookViewMo
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(it.imageUrl),
+                    painter = rememberAsyncImagePainter(it.thumbnail),
                     contentDescription = "Book Thumbnail",
                     modifier = Modifier
                         .fillMaxSize()
@@ -76,7 +74,7 @@ fun BookDetails(bookId: Int, navController: NavController, viewModel: BookViewMo
                     onClick = {
                         isFavorite = !isFavorite
                         if (isFavorite) {
-                            viewModel.addToFavorites(it)
+                            viewModel.addToFavorites(bookId, isFavorite)
                         }
                     },
                     modifier = Modifier

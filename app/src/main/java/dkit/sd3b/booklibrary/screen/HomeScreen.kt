@@ -41,13 +41,12 @@ import dkit.sd3b.booklibrary.navigation.ScreenNavigation
 fun HomeScreen(navController: NavController, viewModel: BookViewModel) {
     val books by viewModel.books.observeAsState(emptyList())
     val categories by viewModel.genres.observeAsState(emptyList())
-
     var showDialog by remember { mutableStateOf(false) }
-    var queryText by remember { mutableStateOf("recommendations") }
-
+    var queryText by remember { mutableStateOf("modern fantasy novels") }
 
     LaunchedEffect(Unit) {
         viewModel.fetchBooksFromDatabase()
+        Log.d("BookLog-Home", "LaunchedEffect triggered")
     }
 
     Column(
@@ -69,6 +68,10 @@ fun HomeScreen(navController: NavController, viewModel: BookViewModel) {
                     CategoryItem(category)
                 }
             }
+        }else{
+            Text(
+                "NO categories available", style = TextStyle(fontSize = 22.sp, color = Color.Black)
+            )
         }
 
         // Spacer between sections
@@ -187,7 +190,7 @@ fun Header(navController: NavController) {
 }
 
 @Composable
-fun CategoryItem(category: String) {
+fun CategoryItem(category: String?) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -202,7 +205,7 @@ fun CategoryItem(category: String) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                category, style = TextStyle(
+                category.toString(), style = TextStyle(
                     fontSize = 16.sp, color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             )
@@ -225,7 +228,7 @@ fun BookItem(book: Book, onClick: () -> Unit) {
                 .padding(8.dp)
         ) {
             Image(
-                painter = rememberAsyncImagePainter(book.imageUrl),
+                painter = rememberAsyncImagePainter(book.thumbnail),
                 contentDescription = book.title,
                 modifier = Modifier
                     .fillMaxWidth()

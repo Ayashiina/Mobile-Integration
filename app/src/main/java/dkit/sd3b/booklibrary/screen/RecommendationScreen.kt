@@ -57,7 +57,7 @@ fun RecommendationScreen(book: Book, onBookClick: (Int) -> Unit) {
         .clickable { onBookClick(book.id) }
         .padding(16.dp)) {
         AsyncImage(
-            model = book.imageUrl,
+            model = book.thumbnail,
             contentDescription = book.title,
             modifier = Modifier
                 .size(100.dp)
