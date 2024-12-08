@@ -2,7 +2,7 @@
 
 # BookSphere
 
-**BookSphere** is a Kotlin-based Android application designed to offer both offline and online book exploration, allowing users to search, save, and browse books seamlessly. The name *BookSphere* reflects the app's unique ability to store all search terms locally, enabling users to explore their library even when offline — as if they could search for books "in space."
+**BookSphere** is a Kotlin-based Android application designed to offer both offline and online book exploration, allowing users to search, save, and browse books seamlessly. "BookSphere" reflects the app's ability to let users explore books in a limitless way, just like searching through a sphere or globe. The app allows you to find and store books locally, enabling offline access and giving you the freedom to explore books whenever and wherever you like.
 
 ---
 
