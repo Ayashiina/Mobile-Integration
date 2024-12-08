@@ -136,7 +136,7 @@ fun SearchItems(book: Book, onClick: () -> Unit) {
             ) {
                 Text(
                     text = book.title ?: "Unknown Title",
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

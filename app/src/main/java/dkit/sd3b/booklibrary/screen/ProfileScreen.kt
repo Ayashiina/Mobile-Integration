@@ -28,7 +28,7 @@ fun ProfileScreen() {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val wallpaperHeight = screenHeight * 0.35f
 
-    var username by remember { mutableStateOf("CozyReader") }
+    var username by remember { mutableStateOf("Nene") }
     var isEditingUsername by remember { mutableStateOf(false) }
 
     var aboutMe by remember { mutableStateOf("I'm an avid book lover who enjoys exploring new worlds through literature.") }

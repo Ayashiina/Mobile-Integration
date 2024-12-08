@@ -21,6 +21,10 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
     private val _selectedBook = MutableLiveData<Book?>()
     val selectedBook: LiveData<Book?> get() = _selectedBook
 
+    init {
+        fetchBooks("modern fantasy novels", 10, 40)
+    }
+
 
     private fun fetchBooks(query: String, pageIndex: Int, pageSize: Int) {
         viewModelScope.launch {
